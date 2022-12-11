@@ -1,7 +1,7 @@
 import mysql from 'mysql2';
 
 export class DBService {
-  static async getFromDb() {
+  static async queryTessieTrackerDB() {
     // TODO add parameter for query
     try {
       console.log('Start getFromDb');
@@ -15,9 +15,13 @@ export class DBService {
         database: process.env.DBNAME,
       });
 
-      const result = connection.execute('SELECT * FROM users');
-
-      console.log('RESULT:', result);
+      // TODO create proper DB service
+      connection.execute('SELECT * FROM users', (err, results) => {
+        console.log(results);
+        if (err) {
+          console.error(err);
+        }
+      });
     } catch (error) {
       console.error('ERROR:', error);
     }

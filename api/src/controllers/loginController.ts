@@ -9,7 +9,7 @@ const login = async (req: Request, res: Response) => {
 
   hashPassword;
 
-  DBService.getFromDb();
+  DBService.queryTessieTrackerDB();
 
   res.status(200).send('login route working');
 };
