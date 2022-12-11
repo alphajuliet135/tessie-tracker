@@ -1,30 +1,27 @@
 import {
-    Button,
-    ButtonGroup,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Center,
-    Divider,
-    Heading,
-    Input,
-    InputGroup,
-    InputRightElement,
-    Stack,
+  Button,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
+  Divider,
+  Heading,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Stack,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 import { LoginService } from '../api/loginService';
 
 export const Login = () => {
-  const [loginResponse, setLoginResponse] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
-
-  loginResponse;
 
   return (
     <Center h="100vh">
