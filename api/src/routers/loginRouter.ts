@@ -3,7 +3,6 @@ import { login } from '../controllers/loginController';
 
 const router = express.Router();
 
-/* GET articles */
-router.get('/', login);
+router.post('/', login);
 
 export { router as default };

@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import loginRouter from './routers/loginRouter';
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // routers
-
+app.use(bodyParser.json());
 app.use('/login', loginRouter);
 
 app.listen(port, () => {
