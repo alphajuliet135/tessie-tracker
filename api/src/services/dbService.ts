@@ -1,13 +1,10 @@
-import mysql from 'mysql2';
+import mysql from 'mysql2/promise';
 
 export class DBService {
-  static async queryTessieTrackerDB() {
-    // TODO add parameter for query
+  static async queryTessieTrackerDB(query: string, preparedStatements?: string[]) {
     try {
-      console.log('Start getFromDb');
-
-      // create the connection to database
-      const connection = mysql.createConnection({
+      // TODO rework logic of getting credentials
+      const connection = await mysql.createConnection({
         host: process.env.DBHOST,
         user: process.env.DBUSER,
         port: 3306,
@@ -15,15 +12,10 @@ export class DBService {
         database: process.env.DBNAME,
       });
 
-      // TODO create proper DB service
-      connection.execute('SELECT * FROM users', (err, results) => {
-        console.log(results);
-        if (err) {
-          console.error(err);
-        }
-      });
+      const [rows] = await connection.query(query, preparedStatements);
+      return rows;
     } catch (error) {
-      console.error('ERROR:', error);
+      throw new Error(error);
     }
   }
 }
