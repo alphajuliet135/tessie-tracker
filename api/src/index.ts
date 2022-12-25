@@ -1,7 +1,9 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import loginRouter from './routers/loginRouter';
+import authRouter from './routers/authRouter';
 import bodyParser from 'body-parser';
+import dataRouter from './routers/dataRouter';
+import { authLimiter, limiter } from './middleware/limiter';
 
 dotenv.config();
 
@@ -14,7 +16,10 @@ app.get('/', (req: Request, res: Response) => {
 
 // routers
 app.use(bodyParser.json());
-app.use('/login', loginRouter);
+app.use('/auth', authLimiter, authRouter);
+
+app.use(limiter);
+app.use('/data', dataRouter);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
