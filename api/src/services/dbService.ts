@@ -1,7 +1,8 @@
-import mysql from 'mysql2/promise';
+import mysql, { FieldPacket, OkPacket } from 'mysql2/promise';
+import { UserData } from '../models/userManagement';
 
-export class DBService {
-  static async queryTessieTrackerDB(query: string, preparedStatements?: string[]) {
+export class TessieTrackerDBService {
+  static async queryUsersTable(query: string, preparedStatements?: string[]) {
     try {
       // TODO rework logic of getting credentials
       const connection = await mysql.createConnection({
@@ -12,7 +13,7 @@ export class DBService {
         database: process.env.DBNAME,
       });
 
-      const [rows] = await connection.query(query, preparedStatements);
+      const [rows]: [UserData[], FieldPacket[]] = await connection.query<UserData[]>(query, preparedStatements);
       return rows;
     } catch (error) {
       throw new Error(error);
