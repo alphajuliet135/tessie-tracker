@@ -4,7 +4,25 @@ import { TessieTrackerDBService } from '../services/dbService';
 import * as jwt from 'jsonwebtoken';
 
 export const register = async (req: Request, res: Response) => {
-  res.status(200).send('this route is still a todo');
+  try {
+    // TODO get/set proper types for requests => ajv or else
+    const hashPassword = await bcrypt.hash(req.body.password, 8);
+    const email = req.body.email;
+    const name = req.body.name;
+    // TODO add permission group setter
+    const permissionGroup = 0;
+    const changedInitPassword = true;
+
+    await TessieTrackerDBService.queryUsersTable(
+      'INSERT INTO `users`(email,password,name,permission_group,changed_init_password) VALUES (?,?,?,?,?);',
+      [email, hashPassword, name, permissionGroup, changedInitPassword],
+    );
+
+    res.status(200).send('User was successfully created');
+  } catch (error) {
+    res.status(400).send('An unexpected error occcurred while registering new user.');
+    throw new Error(error);
+  }
 };
 
 export const login = async (req: Request, res: Response) => {

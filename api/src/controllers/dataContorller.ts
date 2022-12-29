@@ -5,7 +5,7 @@ import { PermissionGroup } from '../models/userManagement';
 
 export const getData = async (req: Request, res: Response) => {
   try {
-    const currentTeslaData: TeslaScopeGetData = await axios.get(`${process.env.TESLASCOPE_URL}?${process.env.TESLASCOPE_APIKEY}`);
+    const currentTeslaData: TeslaScopeGetData = await axios.get(`${process.env.TESLASCOPE_URL}?api_key=${process.env.TESLASCOPE_APIKEY}`);
 
     // Get permisson group from db for user (maybe through signed token, no db call)
     const permissionGroupCurrentUser: PermissionGroup = 2;
