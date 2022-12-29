@@ -26,20 +26,18 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  // TODO implement right hashing logic for passwords
-  const hashPassword = await bcrypt.hash(req.body.password, 8);
-
   // TODO get/set proper types for requests => ajv or else
+  const password = req.body.password as string;
   const email = req.body.email as string;
 
   const dbResult = await TessieTrackerDBService.queryUsersTable('SELECT * FROM users WHERE email = ?', [email]);
-
   if (dbResult.length < 0) {
-    return res.status(400).send('User not found!');
+    return res.status(400).send('Incorrect credentials!');
   }
 
   const user = dbResult[0];
-  if (user.password !== hashPassword) {
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword) {
     return res.status(400).send('Incorrect credentials!');
   }
 
