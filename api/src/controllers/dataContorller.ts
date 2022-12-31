@@ -9,21 +9,22 @@ export const getData = async (req: Request, res: Response) => {
       headers: { 'Accept-Encoding': 'gzip,deflate,compress' },
     });
 
-    return res.status(200).send(currentTeslaData.data);
-    // Get permisson group from db for user (maybe through signed token, no db call)
-    // const permissionGroupCurrentUser: PermissionGroup = 2;
+    // return res.status(200).send(currentTeslaData.data);
+    // Db call to get permission group, more dynamic. Changes easier to see
+    // Todo make typecheck
+    const permissionGroupCurrentUser: PermissionGroup = 2;
 
-    // switch (permissionGroupCurrentUser) {
-    //   case PermissionGroup.Admin:
-    //     return res.status(200).send(currentTeslaData);
-    //   case PermissionGroup.PremiumViewer:
-    //     return res.status(200).send(currentTeslaData);
-    //   default:
-    //     return res.status(200).send({
-    //       lat: currentTeslaData.response.vehicle.latitude,
-    //       long: currentTeslaData.response.vehicle.longitude,
-    //     });
-    // }
+    switch (permissionGroupCurrentUser) {
+      case PermissionGroup.Admin:
+        return res.status(200).send(currentTeslaData.data);
+      case PermissionGroup.PremiumViewer:
+        return res.status(200).send(currentTeslaData.data);
+      default:
+        return res.status(200).send({
+          lat: currentTeslaData.data.response.vehicle.latitude,
+          long: currentTeslaData.data.response.vehicle.longitude,
+        });
+    }
   } catch (error) {
     res.status(401).send('Error while fetching data from TeslaScope');
     console.error(error);

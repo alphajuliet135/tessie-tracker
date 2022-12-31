@@ -10,7 +10,9 @@ export const register = async (req: Request, res: Response) => {
     const email = req.body.email;
     const name = req.body.name;
     // TODO add permission group setter
-    const permissionGroup = 0;
+
+    // TODO create query where token is retrieved from permisson_tokens, used boolean is set and correct permission group is set on new user
+    const permissionGroup = 3;
     const changedInitPassword = true;
 
     await TessieTrackerDBService.queryUsersTable(
@@ -41,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(400).send('Incorrect credentials!');
   }
 
-  const authToken = jwt.sign({ email }, process.env.JWTSECRET, {
+  const authToken = jwt.sign({ email, permission_group: user.permission_group }, process.env.JWTSECRET, {
     expiresIn: 10800, // 3 hours
   });
 
@@ -51,4 +53,8 @@ export const login = async (req: Request, res: Response) => {
     changed_init_password: user.changed_init_password,
     authToken,
   });
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+  return 'TODO change password';
 };
