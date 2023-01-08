@@ -9,16 +9,30 @@ export const register = async (req: Request, res: Response) => {
     const hashPassword = await bcrypt.hash(req.body.password, 8);
     const email = req.body.email;
     const name = req.body.name;
-    // TODO add permission group setter
-
-    // TODO create query where token is retrieved from permisson_tokens, used boolean is set and correct permission group is set on new user
-    const permissionGroup = 3;
+    const token = req.body.token;
     const changedInitPassword = true;
 
+    if (!token) {
+      return res.status(400).send('No token found in request!');
+    }
+
+    const dbTokenResult = await TessieTrackerDBService.queryUsersTable(
+      'SELECT permission_group, used FROM permission_tokens WHERE token_code = ?',
+      [token],
+    );
+
+    if (dbTokenResult[0].used === 1) {
+      return res.status(400).send('Token is invalid');
+    }
+
+    const permissionGroup = dbTokenResult[0].permission_group;
+
+    // TODO reduce number of db calls
     await TessieTrackerDBService.queryUsersTable(
       'INSERT INTO `users`(email,password,name,permission_group,changed_init_password) VALUES (?,?,?,?,?);',
       [email, hashPassword, name, permissionGroup, changedInitPassword],
     );
+    await TessieTrackerDBService.queryUsersTable('UPDATE permission_tokens SET used = 1 WHERE token_code = ?', [token]);
 
     res.status(200).send('User was successfully created');
   } catch (error) {
