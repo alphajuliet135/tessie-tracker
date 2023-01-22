@@ -3,12 +3,15 @@ import dotenv from 'dotenv';
 import authRouter from './routers/authRouter';
 import bodyParser from 'body-parser';
 import dataRouter from './routers/dataRouter';
+import cors from 'cors';
 import { authLimiter, limiter } from './middleware/limiter';
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
+
+app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).send('Welcome');

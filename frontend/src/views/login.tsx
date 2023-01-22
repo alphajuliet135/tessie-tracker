@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Button,
   ButtonGroup,
   Card,
@@ -13,15 +17,37 @@ import {
   InputRightElement,
   Stack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthService } from '../api/loginService';
+import { AuthContext } from '../auth/authContext';
 
 export const Login = () => {
   // TODO add correct check for empty fields
   const [email, setEmail] = useState<string>(' ');
   const [password, setPassword] = useState<string>(' ');
   const [show, setShow] = useState(false);
+  const [error, setError] = useState<string>();
   const handleClick = () => setShow(!show);
+
+  const { setAuthenticated } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const login = async () => {
+    try {
+      await AuthService.login({
+        email,
+        password,
+      });
+
+      setAuthenticated(true);
+      navigate('/map');
+    } catch (error) {
+      console.error(error);
+      setError('An error occured during login, please check the console');
+    }
+  };
 
   return (
     <Center h="100vh">
@@ -46,6 +72,14 @@ export const Login = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            {error && (
+              <>
+                <Alert status="error">
+                  <AlertIcon />
+                  <AlertTitle>Your credentials are incorrect!</AlertTitle>
+                </Alert>
+              </>
+            )}
           </Stack>
         </CardBody>
         <Divider />
@@ -56,10 +90,7 @@ export const Login = () => {
               colorScheme="blue"
               onClick={() => {
                 if (!!email && !!password) {
-                  AuthService.login({
-                    email,
-                    password,
-                  });
+                  login();
                 } else {
                   console.error('Credentials empty');
                 }

@@ -1,12 +1,24 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Route, Routes } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Navigate, Outlet } from 'react-router-dom';
+import { AuthContext, AuthProvider } from './auth/authContext';
 import { Login } from './views/login';
+import { MapView } from './views/map';
 import { Register } from './views/register';
 
 const container = document.getElementById('root')!;
+
+const PrivateRoutes = () => {
+  // const { authenticated } = useContext(AuthContext);
+
+  // if (!authenticated)
+
+  if (!localStorage.getItem('authToken')) return <Navigate to="/" replace />;
+
+  return <Outlet />;
+};
 
 // Create a root.
 const root = ReactDOM.createRoot(container);
@@ -32,10 +44,15 @@ root.render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route element={<PrivateRoutes />}>
+              <Route path="/map" element={<MapView />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </ChakraProvider>
   </React.StrictMode>,
