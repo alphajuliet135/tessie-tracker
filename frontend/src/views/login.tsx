@@ -1,6 +1,6 @@
+import { UnlockIcon } from '@chakra-ui/icons';
 import {
   Alert,
-  AlertDescription,
   AlertIcon,
   AlertTitle,
   Button,
@@ -86,6 +86,7 @@ export const Login = () => {
         <CardFooter>
           <ButtonGroup spacing="2">
             <Button
+              leftIcon={<UnlockIcon />}
               variant="solid"
               colorScheme="blue"
               onClick={() => {

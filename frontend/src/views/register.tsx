@@ -1,3 +1,4 @@
+import { EditIcon } from '@chakra-ui/icons';
 import {
   Center,
   Card,
@@ -68,6 +69,7 @@ export const Register = () => {
         <CardFooter>
           <ButtonGroup spacing="2">
             <Button
+              leftIcon={<EditIcon />}
               variant="solid"
               colorScheme="blue"
               onClick={() => {

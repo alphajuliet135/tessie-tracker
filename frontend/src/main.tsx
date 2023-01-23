@@ -1,9 +1,9 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import React, { useContext } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Route, Routes } from 'react-router';
 import { BrowserRouter, Navigate, Outlet } from 'react-router-dom';
-import { AuthContext, AuthProvider } from './auth/authContext';
+import { AuthProvider, SignOut } from './auth/authContext';
 import { Login } from './views/login';
 import { MapView } from './views/map';
 import { Register } from './views/register';
@@ -11,11 +11,20 @@ import { Register } from './views/register';
 const container = document.getElementById('root')!;
 
 const PrivateRoutes = () => {
-  // const { authenticated } = useContext(AuthContext);
-
-  // if (!authenticated)
+  const signInTimeString = localStorage.getItem('signInTime');
 
   if (!localStorage.getItem('authToken')) return <Navigate to="/" replace />;
+  if (!signInTimeString) {
+    return <Navigate to="/" replace />;
+  } else {
+    const signInTime = new Date(signInTimeString);
+    const signInExpiryTime = signInTime.setHours(signInTime.getHours() + 3);
+
+    if (signInExpiryTime > Date.now()) {
+      SignOut();
+      <Navigate to="/" replace />;
+    }
+  }
 
   return <Outlet />;
 };

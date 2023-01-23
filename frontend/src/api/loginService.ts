@@ -1,10 +1,7 @@
-import { useContext } from 'react';
-import { AuthContext } from '../auth/authContext';
-
 export class AuthService {
   static async login(credentials: { email: string; password: string }): Promise<boolean> {
     try {
-      let apiResponse = await fetch('http://localhost:8000/auth/login', {
+      let apiResponse = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -18,6 +15,7 @@ export class AuthService {
 
       localStorage.setItem('authToken', body.authToken);
       localStorage.setItem('permission_group', body.permission_group);
+      localStorage.setItem('signInTime', `${Date.now()}`);
 
       return true;
     } catch (error) {

@@ -27,6 +27,8 @@ const AuthProvider = ({ children }: Props) => {
 const SignOut = () => {
   localStorage.removeItem('authToken');
   localStorage.removeItem('permission_group');
+  localStorage.removeItem('signInTime');
+
   window.location.reload();
 };
 
