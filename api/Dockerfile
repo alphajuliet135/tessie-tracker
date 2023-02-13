@@ -1,6 +1,15 @@
+# Fetching the latest node image
 FROM node:18
 
-COPY package.json .
+# Setting up the work directory
+WORKDIR /api
+
+# Installing dependencies
+COPY ./package.json ./api
 RUN npm install
+
+# Copying all the files in our project
 COPY . .
+
+# Starting our application
 CMD npm start
