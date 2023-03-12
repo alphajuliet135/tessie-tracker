@@ -18,7 +18,7 @@ jobs:
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Build the Docker image
-        run: docker build . --file api/Dockerfile --tag ajotcole/tessie-tracker-api:latest
+        run: docker build . --file api/dockerfile --tag ajotcole/tessie-tracker-api:latest
 
       - name: Docker Push
         run: docker push ajotcole/tessie-tracker-api
