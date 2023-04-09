@@ -11,7 +11,7 @@ export class TeslaScopeService {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          Authorization: authToken,
+          authorization: authToken,
         },
       });
 
