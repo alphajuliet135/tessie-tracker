@@ -12,6 +12,9 @@ on:
 jobs:
   build-and-deploy-frontend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
 
     # steps to perform in job
     steps:
@@ -31,14 +34,11 @@ jobs:
         with:
           node-version: 18.x
       - run: npm install --legacy-peer-deps
-        working-directory: ./frontend
       - run: npm run build --if-present
         env:
           CI: false
-        working-directory: ./frontend
       - name: Copy to server
         uses: garygrossgarten/github-action-scp@v0.7.3
-        working-directory: ./frontend
         with:
           local: 'dist'
           host: ${{ secrets.SERVER_IP }}
