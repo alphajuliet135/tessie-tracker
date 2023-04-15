@@ -53,7 +53,7 @@ export const Login = () => {
     <Center h="100vh">
       <Card minW="sm">
         <CardHeader>
-          <Heading size="lg">Tessie Tracker V2 - Login</Heading>
+          <Heading size="lg">Tessie Tracker v2 - Login</Heading>
         </CardHeader>
         <CardBody>
           <Stack spacing={3}>

@@ -1,44 +1,61 @@
-import { Box, Button, Heading, HStack } from '@chakra-ui/react';
+import { Box, Button, Heading, HStack, useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import MapGL, { Marker, NavigationControl } from 'react-map-gl';
 import { SignOut } from '../auth/authContext';
 import { LockIcon, RepeatIcon } from '@chakra-ui/icons';
 import { TeslaScopeService } from '../api/teslaScopeService';
-import CityPin from '../utils/cityPin';
+import CityPin from '../components/cityPin';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { DataCard } from '../components/dataCard';
+import { TeslaScopeData } from '../models/teslaScopeDataModel';
 
 export const MapView = () => {
-  const [data, setData] = useState<{
-    lat: number;
-    long: number;
-  }>({
-    lat: 10.00689635464326,
-    long: 53.6002772277303,
-  });
+  const [data, setData] = useState<TeslaScopeData>();
+  const [clickCount, setClickCount] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const toast = useToast();
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await TeslaScopeService.getData();
+        setLoading(true);
+        const receivedData = await TeslaScopeService.getData();
 
-        setData({
-          lat: data.response.vehicle.latitude,
-          long: data.response.vehicle.longitude,
-        });
+        setData(receivedData as TeslaScopeData);
+        setLoading(false);
 
-        console.log(data);
+        console.log(receivedData);
+
+        if (clickCount > 0) {
+          toast({
+            title: 'Tessie data succesfully refreshed.',
+            status: 'success',
+            duration: 2000,
+            isClosable: true,
+          });
+        }
       } catch (e) {
+        setLoading(false);
+        toast({
+          title: 'Error while fetching data for Tessie.',
+          description: 'Please try again or check the logs.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
         console.error(e);
       }
     })();
-  }, []);
+  }, [clickCount]);
 
   return (
     <>
       <Box padding="8px">
         <HStack>
-          <Heading size="md">Tessie Tracker v2 Alpha</Heading>
-          <Button rightIcon={<RepeatIcon />}>Refresh Location</Button>
+          <Heading size="md">Tessie Tracker v2 Beta</Heading>
+          <Button rightIcon={<RepeatIcon />} onClick={() => setClickCount(clickCount + 1)}>
+            Refresh Data
+          </Button>
           <Button rightIcon={<LockIcon />} onClick={() => SignOut()}>
             Sign Out
           </Button>
@@ -55,9 +72,14 @@ export const MapView = () => {
         // TODO fix map token env
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
       >
-        <Marker latitude={data.lat} longitude={data.long}>
-          <CityPin />
-        </Marker>
+        {data && (
+          <>
+            <Marker latitude={data.response.vehicle.latitude} longitude={data.response.vehicle.longitude}>
+              <CityPin />
+            </Marker>
+            <DataCard data={data} loading={loading} />
+          </>
+        )}
       </MapGL>
     </>
   );

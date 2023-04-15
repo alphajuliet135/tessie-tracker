@@ -28,7 +28,7 @@ export const Register = () => {
     <Center h="100vh">
       <Card minW="sm">
         <CardHeader>
-          <Heading size="lg">Tessie Tracker V2 - Register</Heading>
+          <Heading size="lg">Tessie Tracker v2 - Register</Heading>
         </CardHeader>
         <CardBody>
           <Stack spacing={3}>
