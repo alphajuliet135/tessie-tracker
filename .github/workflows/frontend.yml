@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - frontend/**
+      - ./frontend/**
   # run it during pull request
   pull_request:
 
@@ -31,14 +31,14 @@ jobs:
         with:
           node-version: 18.x
       - run: npm install --legacy-peer-deps
-        working-directory: frontend
+        working-directory: ./frontend
       - run: npm run build --if-present
         env:
           CI: false
-        working-directory: frontend
+        working-directory: ./frontend
       - name: Copy to server
         uses: garygrossgarten/github-action-scp@v0.7.3
-        working-directory: frontend
+        working-directory: ./frontend
         with:
           local: 'dist'
           host: ${{ secrets.SERVER_IP }}
