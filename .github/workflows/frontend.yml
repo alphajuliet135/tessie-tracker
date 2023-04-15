@@ -27,7 +27,7 @@ jobs:
       - name: Connect to VPN
         uses: 'kota65535/github-openvpn-connect-action@v2'
         with:
-          config_file: ./github/workflows/GITHUBRUNNER3.ovpn
+          config_file: ./../.github/workflows/GITHUBRUNNER3.ovpn
           password: ${{ secrets.OVPN_PASSWORD }}
       - name: Use Node.js 18.x
         uses: actions/setup-node@v1
