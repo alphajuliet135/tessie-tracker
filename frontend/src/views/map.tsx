@@ -54,7 +54,7 @@ export const MapView = () => {
         <HStack>
           <Heading size="md">Tessie Tracker v2 Beta</Heading>
           <Button rightIcon={<RepeatIcon />} onClick={() => setClickCount(clickCount + 1)}>
-            Refresh Location
+            Refresh Data
           </Button>
           <Button rightIcon={<LockIcon />} onClick={() => SignOut()}>
             Sign Out
