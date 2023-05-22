@@ -7,6 +7,7 @@ import { AuthProvider, SignOut } from './auth/authContext';
 import { Login } from './views/login';
 import { MapView } from './views/map';
 import { Register } from './views/register';
+import theme from './theme';
 
 const container = document.getElementById('root')!;
 
@@ -31,23 +32,6 @@ const PrivateRoutes = () => {
 
 // Create a root.
 const root = ReactDOM.createRoot(container);
-
-const theme = extendTheme({
-  semanticTokens: {
-    colors: {
-      error: 'red.500',
-      success: 'green.500',
-      primary: {
-        default: 'red.500',
-        _dark: 'red.400',
-      },
-      secondary: {
-        default: 'red.800',
-        _dark: 'red.700',
-      },
-    },
-  },
-});
 
 root.render(
   <React.StrictMode>
