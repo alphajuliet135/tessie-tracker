@@ -1,3 +1,5 @@
+import { useToast } from '@chakra-ui/react';
+
 export class AuthService {
   static async login(credentials: { email: string; password: string }): Promise<boolean> {
     try {
@@ -23,8 +25,24 @@ export class AuthService {
     }
   }
 
-  static register() {
-    //TODO implement register
-    return 'register triggered';
+  static async register(credentials: { email: string; password: string; name: string; token: string }): Promise<boolean> {
+    try {
+      let apiResponse = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (apiResponse.ok) {
+        return true;
+      } else {
+        throw apiResponse.status;
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 }

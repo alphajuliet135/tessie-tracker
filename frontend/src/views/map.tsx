@@ -15,6 +15,14 @@ export const MapView = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const toast = useToast();
 
+  const [viewport, setViewport] = useState({
+    latitude: 53.554682,
+    longitude: 9.994892,
+    zoom: 8,
+    bearing: 0,
+    pitch: 0,
+  });
+
   useEffect(() => {
     (async () => {
       try {
@@ -24,7 +32,13 @@ export const MapView = () => {
         setData(receivedData as TeslaScopeData);
         setLoading(false);
 
-        console.log(receivedData);
+        setViewport({
+          latitude: receivedData.response.vehicle.latitude,
+          longitude: receivedData.response.vehicle.longitude,
+          zoom: 8,
+          bearing: 0,
+          pitch: 0,
+        });
 
         if (clickCount > 0) {
           toast({
@@ -62,11 +76,8 @@ export const MapView = () => {
         </HStack>
       </Box>
       <MapGL
-        initialViewState={{
-          latitude: 53.554682,
-          longitude: 9.994892,
-          zoom: 8,
-        }}
+        {...viewport}
+        onMove={(evt) => setViewport(evt.viewState)}
         style={{ width: '100vw', height: '100vh' }}
         mapStyle="mapbox://styles/mapbox/streets-v9"
         // TODO fix map token env

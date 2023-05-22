@@ -13,16 +13,62 @@ import {
   Divider,
   CardFooter,
   ButtonGroup,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { AuthService } from '../api/loginService';
+import { useNavigate } from 'react-router-dom';
 
 export const Register = () => {
   // TODO add correct check for empty fields
-  const [email, setEmail] = useState<string>(' ');
-  const [password, setPassword] = useState<string>(' ');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const [name, setName] = useState<string>();
+  const [token, setToken] = useState<string>();
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
+  const toast = useToast();
+
+  const navigate = useNavigate();
+
+  const register = async () => {
+    try {
+      setIsLoading(true);
+
+      console.log(email, password, name, token);
+
+      // TODO replace with better react forms logic to validate
+      if (!email || !password || !name || !token) {
+        throw 'Empty fields on form';
+      }
+
+      await AuthService.register({
+        email,
+        password,
+        name,
+        token,
+      });
+
+      toast({
+        title: 'Sucessfully created user!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      navigate('/');
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+      toast({
+        title: `Unable to register user due to the following error: ${error}`,
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <Center h="100vh">
@@ -32,11 +78,10 @@ export const Register = () => {
         </CardHeader>
         <CardBody>
           <Stack spacing={3}>
-            <Input isInvalid={!email} placeholder="E-Mail" onChange={(event) => setEmail(event.target.value)} />
-            <Input isInvalid={!email} placeholder="Name" onChange={(event) => setEmail(event.target.value)} />
+            <Input placeholder="E-Mail" onChange={(event) => setEmail(event.target.value)} />
+            <Input placeholder="Name" onChange={(event) => setName(event.target.value)} />
             <InputGroup size="md">
               <Input
-                isInvalid={!password}
                 pr="4.5rem"
                 type={show ? 'text' : 'password'}
                 placeholder="Enter password"
@@ -48,41 +93,16 @@ export const Register = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
-            <InputGroup size="md">
-              <Input
-                isInvalid={!password}
-                pr="4.5rem"
-                type={show ? 'text' : 'password'}
-                placeholder="Enter password again"
-                onChange={(event) => setPassword(event.target.value)}
-              />
-              <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={handleClick}>
-                  {show ? 'Hide' : 'Show'}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-            <Input isInvalid={!email} placeholder="Register Token" onChange={(event) => setEmail(event.target.value)} />
+            <Input placeholder="Register Token" onChange={(event) => setToken(event.target.value)} />
           </Stack>
         </CardBody>
         <Divider />
         <CardFooter>
           <ButtonGroup spacing="2">
-            <Button
-              leftIcon={<EditIcon />}
-              variant="solid"
-              colorScheme="blue"
-              onClick={() => {
-                if (!!email && !!password) {
-                  AuthService.register();
-                } else {
-                  console.error('Credentials empty');
-                }
-              }}
-            >
+            <Button isLoading={isLoading} leftIcon={<EditIcon />} variant="solid" colorScheme="red" onClick={() => register()}>
               Register
             </Button>
-            <Button variant="ghost" colorScheme="blue" onClick={() => window.open('/', '_self')}>
+            <Button variant="ghost" colorScheme="red" onClick={() => window.open('/', '_self')}>
               Login
             </Button>
           </ButtonGroup>

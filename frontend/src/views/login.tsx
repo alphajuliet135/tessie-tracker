@@ -24,6 +24,7 @@ import { AuthContext } from '../auth/authContext';
 
 export const Login = () => {
   // TODO add correct check for empty fields
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>(' ');
   const [password, setPassword] = useState<string>(' ');
   const [show, setShow] = useState(false);
@@ -36,14 +37,17 @@ export const Login = () => {
 
   const login = async () => {
     try {
+      setIsLoading(true);
       await AuthService.login({
         email,
         password,
       });
 
+      setIsLoading(false);
       setAuthenticated(true);
       navigate('/map');
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
       setError('An error occured during login, please check the console');
     }
@@ -86,9 +90,10 @@ export const Login = () => {
         <CardFooter>
           <ButtonGroup spacing="2">
             <Button
+              isLoading={isLoading}
               leftIcon={<UnlockIcon />}
               variant="solid"
-              colorScheme="blue"
+              colorScheme="red"
               onClick={() => {
                 if (!!email && !!password) {
                   login();
@@ -99,7 +104,7 @@ export const Login = () => {
             >
               Login
             </Button>
-            <Button variant="ghost" colorScheme="blue" onClick={() => window.open('/register', '_self')}>
+            <Button variant="ghost" colorScheme="red" onClick={() => window.open('/register', '_self')} isDisabled={isLoading}>
               Signup
             </Button>
           </ButtonGroup>
