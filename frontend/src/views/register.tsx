@@ -1,4 +1,4 @@
-import { EditIcon } from '@chakra-ui/icons';
+import { EditIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import {
   Center,
   Card,
@@ -14,6 +14,9 @@ import {
   CardFooter,
   ButtonGroup,
   useToast,
+  useColorMode,
+  Badge,
+  Tag,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { AuthService } from '../api/loginService';
@@ -29,6 +32,7 @@ export const Register = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const navigate = useNavigate();
 
@@ -74,7 +78,22 @@ export const Register = () => {
     <Center h="100vh">
       <Card minW="sm">
         <CardHeader>
-          <Heading size="lg">Tessie Tracker v2 - Register</Heading>
+          <Center>
+            <Heading size="lg">
+              Tessie Tracker{' '}
+              <Badge ml="1" fontSize="0.8em" colorScheme="blue">
+                v2
+              </Badge>
+              <Badge ml="1" fontSize="0.8em" colorScheme="green">
+                Beta
+              </Badge>
+            </Heading>
+          </Center>
+          <Center marginTop="10px">
+            <Tag size="lg" borderRadius="full" variant="solid" colorScheme="green">
+              Register
+            </Tag>
+          </Center>
         </CardHeader>
         <CardBody>
           <Stack spacing={3}>
@@ -104,6 +123,9 @@ export const Register = () => {
             </Button>
             <Button variant="ghost" colorScheme="red" onClick={() => window.open('/', '_self')}>
               Login
+            </Button>
+            <Button variant="ghost" onClick={toggleColorMode}>
+              {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             </Button>
           </ButtonGroup>
         </CardFooter>

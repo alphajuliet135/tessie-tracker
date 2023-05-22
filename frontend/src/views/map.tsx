@@ -1,8 +1,25 @@
-import { Box, Button, Heading, HStack, useToast } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  Flex,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  SimpleGrid,
+  Spacer,
+  useColorMode,
+  useColorModeValue,
+  useToast,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import MapGL, { Marker, NavigationControl } from 'react-map-gl';
 import { SignOut } from '../auth/authContext';
-import { LockIcon, RepeatIcon } from '@chakra-ui/icons';
+import { TbLogout } from 'react-icons/tb';
+import { LockIcon, MoonIcon, RepeatIcon, SunIcon } from '@chakra-ui/icons';
 import { TeslaScopeService } from '../api/teslaScopeService';
 import CityPin from '../components/cityPin';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -14,6 +31,8 @@ export const MapView = () => {
   const [clickCount, setClickCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const toast = useToast();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const mapStyleColor = useColorModeValue('mapbox://styles/mapbox/streets-v9', 'mapbox://styles/mapbox/dark-v11');
 
   const [viewport, setViewport] = useState({
     latitude: 53.554682,
@@ -64,22 +83,38 @@ export const MapView = () => {
 
   return (
     <>
-      <Box padding="8px">
-        <HStack>
-          <Heading size="md">Tessie Tracker v2 Beta</Heading>
-          <Button rightIcon={<RepeatIcon />} onClick={() => setClickCount(clickCount + 1)}>
-            Refresh Data
-          </Button>
-          <Button rightIcon={<LockIcon />} onClick={() => SignOut()}>
-            Sign Out
-          </Button>
-        </HStack>
-      </Box>
+      <Flex padding="0 10px">
+        <Center>
+          <Heading size="md">
+            Tessie Tracker{' '}
+            <Badge ml="1" fontSize="0.8em" colorScheme="blue">
+              v2
+            </Badge>
+            <Badge ml="1" fontSize="0.8em" colorScheme="green">
+              Beta
+            </Badge>
+          </Heading>
+        </Center>
+        <Spacer />
+        <Box margin="5px">
+          <ButtonGroup>
+            <Button variant="ghost" onClick={toggleColorMode}>
+              {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            </Button>
+            <Button isLoading={loading} title="Refresh data" onClick={() => setClickCount(clickCount + 1)}>
+              <RepeatIcon />
+            </Button>
+            <Button right="0" title="Log Out" onClick={() => SignOut()}>
+              <TbLogout />
+            </Button>
+          </ButtonGroup>
+        </Box>
+      </Flex>
       <MapGL
         {...viewport}
         onMove={(evt) => setViewport(evt.viewState)}
         style={{ width: '100vw', height: '100vh' }}
-        mapStyle="mapbox://styles/mapbox/streets-v9"
+        mapStyle={mapStyleColor}
         // TODO fix map token env
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
       >
@@ -88,7 +123,7 @@ export const MapView = () => {
             <Marker latitude={data.response.vehicle.latitude} longitude={data.response.vehicle.longitude}>
               <CityPin />
             </Marker>
-            <DataCard data={data} loading={loading} />
+            <DataCard data={data} />
           </>
         )}
       </MapGL>
