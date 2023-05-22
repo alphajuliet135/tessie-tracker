@@ -8,8 +8,30 @@ on:
   pull_request:
 
 jobs:
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      start-frontend: ${{ steps.filter.outputs.frontend }}
+      start-api: ${{ steps.filter.outputs.api }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+
   build-frontend:
     runs-on: ubuntu-latest
+    needs: paths-filter
+    if: needs.paths-filter.outputs.start-frontend == 'true'
     defaults:
       run:
         working-directory: ./frontend
@@ -61,6 +83,8 @@ jobs:
 
   build-api:
     runs-on: ubuntu-latest
+    needs: paths-filter
+    if: needs.paths-filter.outputs.start-api == 'true'
     defaults:
       run:
         working-directory: ./api
