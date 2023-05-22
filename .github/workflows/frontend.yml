@@ -1,4 +1,4 @@
-name: Build and Publish
+name: Build and Publish (Frontend)
 
 on:
   # run it on push to the default repository branch
@@ -25,6 +25,7 @@ jobs:
         uses: tailscale/github-action@main
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          version: 1.40.1
       - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
