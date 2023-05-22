@@ -37,7 +37,7 @@ jobs:
       - name: Copy to server
         uses: garygrossgarten/github-action-scp@v0.7.3
         with:
-          local: dist/*
+          local: frontend/dist
           host: ${{ secrets.SERVER_IP }}
           port: 22
           remote: '../../var/lib/docker/volumes/tessie-tracker-frontend/_data'
