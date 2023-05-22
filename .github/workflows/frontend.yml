@@ -18,17 +18,14 @@ jobs:
 
     # steps to perform in job
     steps:
+      -name
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install OpenVPN
-        run: |
-          sudo apt update
-          sudo apt install -y openvpn openvpn-systemd-resolved
-      - name: Connect to VPN
-        uses: 'kota65535/github-openvpn-connect-action@v2'
+      - name: Setup Tailscale
+        id: tailscale
+        uses: tailscale/github-action@main
         with:
-          config_file: ./frontend/vpn/GITHUBRUNNER3.ovpn
-          password: ${{ secrets.OVPN_PASSWORD }}
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
       - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
@@ -46,3 +43,4 @@ jobs:
           remote: '../../var/lib/docker/volumes/tessie-tracker-frontend/_data'
           username: ${{ secrets.HETZNER_USERNAME }}
           password: ${{ secrets.HETZNER_PASSWORD }}
+          privateKey: ${{ secrets.PRIVATE_KEY }}
