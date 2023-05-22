@@ -24,11 +24,11 @@ jobs:
       - run: npm run build --if-present
         env:
           CI: false
-      - name: Save artigact for next job
+      - name: Save artifact for next job
         uses: actions/upload-artifact@master
         with:
           name: frontend-artifact
-          path: dist
+          path: frontend/dist
 
   deploy-frontend:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: frontend-artifact
-          path: dist
+          path: frontend/dist
       - name: Setup Tailscale
         id: tailscale
         uses: tailscale/github-action@main
@@ -49,7 +49,7 @@ jobs:
       - name: Copy to server
         uses: garygrossgarten/github-action-scp@v0.7.3
         with:
-          local: dist
+          local: frontend/dist
           host: ${{ secrets.SERVER_IP }}
           port: 22
           remote: '../../var/lib/docker/volumes/tessie-tracker-frontend/_data'
