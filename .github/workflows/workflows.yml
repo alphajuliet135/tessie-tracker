@@ -61,7 +61,6 @@ jobs:
 
   build-api:
     runs-on: ubuntu-latest
-    steps:
     defaults:
       run:
         working-directory: ./frontend
