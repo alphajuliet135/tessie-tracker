@@ -11,18 +11,18 @@ jobs:
   paths-filter:
     runs-on: ubuntu-latest
     outputs:
-      start-frontend: ${{ steps.filter.outputs.frontend }}
-      start-api: ${{ steps.filter.outputs.api }}
+      start-frontend: ${{ steps.filter-frontend.outputs.frontend }}
+      start-api: ${{ steps.filter-api.outputs.api }}
     steps:
       - uses: actions/checkout@v2
       - uses: dorny/paths-filter@v2
-        id: filter
+        id: filter-frontend
         with:
           filters: |
             frontend:
               - 'frontend/**'
       - uses: dorny/paths-filter@v2
-        id: filter
+        id: filter-api
         with:
           filters: |
             api:
