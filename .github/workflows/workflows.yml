@@ -75,7 +75,7 @@ jobs:
           local: frontend/dist
           host: ${{ secrets.SERVER_IP }}
           port: 22
-          remote: '../../var/lib/docker/volumes/tessie-tracker-frontend/_data'
+          remote: 'staticpages/tessie-tracker-frontend'
           username: ${{ secrets.HETZNER_USERNAME }}
           password: ${{ secrets.HETZNER_PASSWORD }}
           privateKey: ${{ secrets.PRIVATE_KEY }}
