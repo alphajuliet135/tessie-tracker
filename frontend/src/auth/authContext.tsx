@@ -28,8 +28,6 @@ const SignOut = () => {
   localStorage.removeItem('authToken');
   localStorage.removeItem('permission_group');
   localStorage.removeItem('signInTime');
-
-  window.location.reload();
 };
 
 export { AuthContext, AuthProvider, SignOut };
