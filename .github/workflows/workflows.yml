@@ -45,7 +45,8 @@ jobs:
       - run: npm install --legacy-peer-deps
       - run: npm run build --if-present
         env:
-          CI: false
+          VITE_API_URL: ${{ secrets.TESSIE_TRACKER_API_URL }}
+          VITE_MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
       - name: Save artifact for next job
         uses: actions/upload-artifact@master
         with:
