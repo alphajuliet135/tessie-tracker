@@ -25,7 +25,6 @@ import CityPin from '../components/cityPin';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { DataCard } from '../components/dataCard';
 import { TeslaScopeData } from '../models/teslaScopeDataModel';
-import { useNavigate } from 'react-router-dom';
 
 export const MapView = () => {
   const [data, setData] = useState<TeslaScopeData>();
@@ -34,7 +33,6 @@ export const MapView = () => {
   const toast = useToast();
   const { colorMode, toggleColorMode } = useColorMode();
   const mapStyleColor = useColorModeValue('mapbox://styles/mapbox/streets-v9', 'mapbox://styles/mapbox/dark-v11');
-  const navigate = useNavigate();
 
   const [viewport, setViewport] = useState({
     latitude: 53.554682,
@@ -106,14 +104,7 @@ export const MapView = () => {
             <Button isLoading={loading} title="Refresh data" onClick={() => setClickCount(clickCount + 1)}>
               <RepeatIcon />
             </Button>
-            <Button
-              right="0"
-              title="Log Out"
-              onClick={() => {
-                SignOut();
-                navigate('/');
-              }}
-            >
+            <Button right="0" title="Log Out" onClick={() => SignOut()}>
               <TbLogout />
             </Button>
           </ButtonGroup>
