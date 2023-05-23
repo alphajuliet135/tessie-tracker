@@ -113,7 +113,7 @@ export const MapView = () => {
       <MapGL
         {...viewport}
         onMove={(evt) => setViewport(evt.viewState)}
-        style={{ width: '100vw', height: '100vh' }}
+        style={{ width: '100vw', height: 'calc(100vh - 50px)' }}
         mapStyle={mapStyleColor}
         // TODO fix map token env
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}

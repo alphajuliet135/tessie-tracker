@@ -4,6 +4,7 @@ import {
   AlertIcon,
   AlertTitle,
   Badge,
+  Box,
   Button,
   ButtonGroup,
   Card,
@@ -12,10 +13,12 @@ import {
   CardHeader,
   Center,
   Divider,
+  Flex,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
+  Spacer,
   Stack,
   Tag,
   useColorMode,
@@ -106,30 +109,34 @@ export const Login = () => {
           </Stack>
         </CardBody>
         <Divider />
-        <CardFooter>
-          <ButtonGroup spacing="2">
-            <Button
-              isLoading={isLoading}
-              leftIcon={<UnlockIcon />}
-              variant="solid"
-              colorScheme="red"
-              onClick={() => {
-                if (!!email && !!password) {
-                  login();
-                } else {
-                  console.error('Credentials empty');
-                }
-              }}
-            >
-              Login
-            </Button>
-            <Button variant="ghost" colorScheme="red" onClick={() => window.open('/register', '_self')} isDisabled={isLoading}>
-              Signup
-            </Button>
+        <CardFooter justifyContent="space-between">
+          <Box>
             <Button variant="ghost" onClick={toggleColorMode}>
               {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             </Button>
-          </ButtonGroup>
+          </Box>
+          <Box>
+            <ButtonGroup spacing="2">
+              <Button variant="ghost" colorScheme="red" onClick={() => window.open('/register', '_self')} isDisabled={isLoading}>
+                Register
+              </Button>
+              <Button
+                isLoading={isLoading}
+                leftIcon={<UnlockIcon />}
+                variant="solid"
+                colorScheme="red"
+                onClick={() => {
+                  if (!!email && !!password) {
+                    login();
+                  } else {
+                    console.error('Credentials empty');
+                  }
+                }}
+              >
+                Login
+              </Button>
+            </ButtonGroup>
+          </Box>
         </CardFooter>
       </Card>
     </Center>

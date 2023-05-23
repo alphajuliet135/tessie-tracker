@@ -17,6 +17,7 @@ import {
   useColorMode,
   Badge,
   Tag,
+  Box,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { AuthService } from '../api/loginService';
@@ -116,18 +117,22 @@ export const Register = () => {
           </Stack>
         </CardBody>
         <Divider />
-        <CardFooter>
-          <ButtonGroup spacing="2">
-            <Button isLoading={isLoading} leftIcon={<EditIcon />} variant="solid" colorScheme="red" onClick={() => register()}>
-              Register
-            </Button>
-            <Button variant="ghost" colorScheme="red" onClick={() => window.open('/', '_self')}>
-              Login
-            </Button>
+        <CardFooter justifyContent="space-between">
+          <Box>
             <Button variant="ghost" onClick={toggleColorMode}>
               {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             </Button>
-          </ButtonGroup>
+          </Box>
+          <Box>
+            <ButtonGroup spacing="2">
+              <Button variant="ghost" colorScheme="red" onClick={() => window.open('/', '_self')}>
+                Login
+              </Button>
+              <Button isLoading={isLoading} leftIcon={<EditIcon />} variant="solid" colorScheme="red" onClick={() => register()}>
+                Register
+              </Button>
+            </ButtonGroup>
+          </Box>
         </CardFooter>
       </Card>
     </Center>
