@@ -1,135 +1,34 @@
-name: Build and Deploy Tessie Tracker
+name: Build and Push Backend Docker Image to GitHub Container Registry
 
 on:
-  # run it on push to the default repository branch
   push:
-    branches: [main]
-  # run it during pull request
-  pull_request:
+    paths:
+      - 'backend/**'
 
 jobs:
-  paths-filter:
+  build-and-push-backend:
     runs-on: ubuntu-latest
-    outputs:
-      start-frontend: ${{ steps.filter-frontend.outputs.frontend }}
-      start-api: ${{ steps.filter-api.outputs.api }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: filter-frontend
-        with:
-          filters: |
-            frontend:
-              - 'frontend/**'
-      - uses: dorny/paths-filter@v2
-        id: filter-api
-        with:
-          filters: |
-            api:
-              - 'api/**'
 
-  build-frontend:
-    runs-on: ubuntu-latest
-    needs: paths-filter
-    if: needs.paths-filter.outputs.start-frontend == 'true'
-    defaults:
-      run:
-        working-directory: ./frontend
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18.x
-      - run: npm install --legacy-peer-deps
-      - run: npm run build --if-present
-        env:
-          VITE_API_URL: ${{ secrets.TESSIE_TRACKER_API_URL }}
-          VITE_MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
-      - name: Save artifact for next job
-        uses: actions/upload-artifact@master
-        with:
-          name: frontend-artifact
-          path: frontend/dist
-
-  deploy-frontend:
-    runs-on: ubuntu-latest
-    needs: build-frontend
-    if: github.event_name != 'pull_request'
-    steps:
-      - uses: actions/checkout@master
-      - name: Retrieve frontend artifact
-        uses: actions/download-artifact@master
-        with:
-          name: frontend-artifact
-          path: frontend/dist
-      - name: Setup Tailscale
-        id: tailscale
-        uses: tailscale/github-action@main
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-          version: 1.40.1
-      - name: Copy to server
-        uses: garygrossgarten/github-action-scp@v0.7.3
-        with:
-          local: frontend/dist
-          host: ${{ secrets.SERVER_IP }}
-          port: 22
-          remote: 'staticpages/tessie-tracker-frontend'
-          username: ${{ secrets.HETZNER_USERNAME }}
-          password: ${{ secrets.HETZNER_PASSWORD }}
-          privateKey: ${{ secrets.PRIVATE_KEY }}
-          passphrase: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
-
-  build-api:
-    runs-on: ubuntu-latest
-    needs: paths-filter
-    if: needs.paths-filter.outputs.start-api == 'true'
-    defaults:
-      run:
-        working-directory: ./api
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18.x
-      - run: npm install --legacy-peer-deps
-      - run: npm run build --if-present
-        env:
-          CI: false
-
-  push-api-docker-image:
-    runs-on: ubuntu-latest
-    needs: build-api
-    if: github.event_name != 'pull_request'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build image and push to Docker Hub
-        uses: docker/build-push-action@v2
-        with:
-          context: ./api
-          tags: |
-            ajotcole/tessie-tracker-api:latest
-          push: ${{ github.ref == 'refs/heads/main' }}
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
 
-  update-api-docker-image:
-    runs-on: ubuntu-latest
-    needs: push-api-docker-image
-    if: github.event_name != 'pull_request'
-    steps:
-      - name: Test Output
-        run: echo I will work in the future
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/backend:latest
+
+      - name: Show image digest
+        run: echo "Image digest: ${{ steps.build-and-push-backend.outputs.digest }}"
